@@ -34,16 +34,11 @@ function! candic#append(dict, key, value) abort " {{{
   endfor
 endfunction " }}}
 
-" @return 1 if dict does not have a:key
-function! candic#remove(dict, key) abort " {{{
-  let key = s:kname(a:key)
-  if !has_key(a:dict['dic'], key)
-    return 1
-  endif
-  for i in range(len(key))
-    let s = key[0 : i]
+function! s:remove(dict, key) abort " {{{
+  for i in range(len(a:key))
+    let s = a:key[0 : i]
     for j in range(len(a:dict['candi'][s]))
-      if a:dict['candi'][s][j] ==# key
+      if a:dict['candi'][s][j] ==# a:key
         if len(a:dict['candi'][s]) == 1
           unlet a:dict['candi'][s]
         else
@@ -53,8 +48,21 @@ function! candic#remove(dict, key) abort " {{{
       endif
     endfor
   endfor
-  unlet a:dict['dic'][key]
+  unlet a:dict['dic'][a:key]
   return 0
+endfunction " }}}
+
+function! candic#remove(dict, ...) abort " {{{
+" removes elements from {dict}.
+" Note: candict#remove(d, '') removes all elements from d
+" @return number of removed elements
+  let keys = call(function('candic#keys'), [a:dict] + a:000)
+  let n = len(keys)
+  for k in keys
+    " map() returns E685
+    call s:remove(a:dict, k)
+  endfor
+  return n
 endfunction " }}}
 
 function! candic#keys(dict, ...) abort " {{{
@@ -75,21 +83,10 @@ function! candic#keys(dict, ...) abort " {{{
   endif
 endfunction " }}}
 
-" @return dict[a:key] if a:key is defined, candidates otherwise
 function! candic#values(dict, ...) abort " {{{
-  let key = a:0 == 0 ? '' : s:kname(a:1)
-  let regexp = get(a:000, 1, 0)
-  if key ==# ''
-    return values(a:dict['dic'])
-  elseif regexp
-    let ks = keys(a:dict['dic'])
-    let ks = filter(ks, 'v:val =~# key')
-    return map(ks, 'a:dict.dic[v:val]')
-  elseif has_key(a:dict['dic'], key)
-    return [a:dict['dic'][key]]
-  endif
-  let p = candic#keys(a:dict, key)
-  return map(copy(p), 'a:dict.dic[v:val]')
+" @return dict[a:key] if a:key is defined, candidates otherwise
+  let keys = call(function('candic#keys'), [a:dict] + a:000)
+  return map(copy(keys), 'a:dict.dic[v:val]')
 endfunction " }}}
 
 let &cpo = s:save_cpo
