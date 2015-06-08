@@ -59,8 +59,8 @@ endfunction " }}}
 
 " @return candidates which start with a:key
 " @return all candicates if a:key=''
-function! candic#keys(dict, key) abort " {{{
-  let key = s:kname(a:key)
+function! candic#keys(dict, ...) abort " {{{
+  let key = a:0 == 0 ? '' : s:kname(a:1)
   if key ==# ''
     return keys(a:dict['dic'])
   elseif has_key(a:dict['candi'], key)
