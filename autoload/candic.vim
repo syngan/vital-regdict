@@ -31,10 +31,7 @@ function! candic#remove(dict, ...) abort " {{{
 " @return number of removed elements
   let keys = call(function('candic#keys'), [a:dict] + a:000)
   let n = len(keys)
-  for k in keys
-    " map() returns E685
-    call s:remove(a:dict, k)
-  endfor
+  call map(keys, 's:remove(a:dict, v:val)')
   return n
 endfunction " }}}
 
