@@ -38,18 +38,16 @@ endfunction " }}}
 function! candic#keys(dict, ...) abort " {{{
 " keys(dict [, key, [flag]])
 " @return candidates which start with a:key
-" @return all candicates if a:key=''
-  let key = a:0 == 0 ? '' : s:kname(a:1)
-  let regexp = get(a:000, 1, 0)
-  if key ==# ''
+  if a:0 == 0
     return keys(a:dict)
-  elseif regexp
+  endif
+  let key = s:kname(a:1)
+  let flag = get(a:000, 1, 0)
+  if flag == 1
     let ks = keys(a:dict)
     return filter(ks, 'v:val =~# key')
   else
-    let ks = keys(a:dict)
-    let key = '^' . key
-    return filter(ks, 'v:val =~# key')
+    return has_key(a:dict, key) ? [key] : []
   endif
 endfunction " }}}
 
