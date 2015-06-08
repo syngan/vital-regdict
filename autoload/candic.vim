@@ -11,8 +11,8 @@ function! s:kname(key) abort " {{{
   return type(a:key) == type('') ? a:key : string(a:key)
 endfunction " }}}
 
-" @return 1 if key is invalid
 function! candic#append(dict, key, value) abort " {{{
+" @return 1 if key is invalid (empty-string)
   let key = s:kname(a:key)
   if key ==# ''
     return 1
@@ -76,12 +76,20 @@ function! candic#keys(dict, ...) abort " {{{
 endfunction " }}}
 
 " @return dict[a:key] if a:key is defined, candidates otherwise
-function! candic#get(dict, key) abort " {{{
-  if has_key(a:dict['dic'], a:key)
-    return [a:dict['dic'][a:key]]
+function! candic#values(dict, ...) abort " {{{
+  let key = a:0 == 0 ? '' : s:kname(a:1)
+  let regexp = get(a:000, 1, 0)
+  if key ==# ''
+    return values(a:dict['dic'])
+  elseif regexp
+    let ks = keys(a:dict['dic'])
+    let ks = filter(ks, 'v:val =~# key')
+    return map(ks, 'a:dict.dic[v:val]')
+  elseif has_key(a:dict['dic'], key)
+    return [a:dict['dic'][key]]
   endif
-  let p = candic#keys(a:dict, a:key)
-  return map(copy(p), 'a:dict[''dic''][v:val]')
+  let p = candic#keys(a:dict, key)
+  return map(copy(p), 'a:dict.dic[v:val]')
 endfunction " }}}
 
 let &cpo = s:save_cpo
