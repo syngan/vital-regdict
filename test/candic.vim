@@ -66,7 +66,6 @@ function! s:suite.basic() " {{{
   call s:assert.equals(candic#remove(d, 'ha'), 0, 'del%ha')
   call s:assert.true(s:same(candic#keys(d, 'h'), ['hoge', 'hage']), 'h')
   call s:assert.true(s:same(candic#keys(d, 'ha'), ['hage']), '')
-
 endfunction " }}}
 
 function! s:suite.append() " {{{
@@ -85,6 +84,29 @@ function! s:suite.remove() " {{{
   call candic#append(d, 'ha', 1)
   call s:assert.equals(candic#remove(d, 'hage'), 1, 'hage')
   call s:assert.equals(candic#remove(d, 'ha'), 0, 'ha-1')
+endfunction " }}}
+
+function! s:suite.values() " {{{
+  let d = candic#init()
+  call candic#append(d, 'hoge', 1)
+  call candic#append(d, 'hage', 2)
+  call candic#append(d, 'ha', 3)
+  call candic#append(d, 'foo', 4)
+  call candic#append(d, 'baa', 5)
+
+  call s:assert.true(s:same(candic#values(d), [1,2,3,4,5]), '')
+  call s:assert.true(s:same(candic#values(d, ''), [1,2,3,4,5]), '')
+  call s:assert.true(s:same(candic#values(d, '^h'), []), '^h def')
+  call s:assert.true(s:same(candic#values(d, '^h', 0), []), '^h 0')
+  call s:assert.true(s:same(candic#values(d, '^h', 1), [1,2,3]), '^h 1')
+  call s:assert.true(s:same(candic#values(d, 'boo'), []), 'boo')
+  call s:assert.true(s:same(candic#values(d, 'b'), [5]), 'b')
+  call candic#append(d, 'boo', 6)
+  call s:assert.true(s:same(candic#values(d, 'b'), [5, 6]), 'b')
+  call s:assert.true(s:same(candic#values(d, 'boo'), [6]), 'boo')
+  call candic#remove(d, 'baa')
+  call s:assert.true(s:same(candic#values(d, 'b'), [6]), 'b')
+  call s:assert.true(s:same(candic#values(d, 'boo'), [6]), 'boo')
 endfunction " }}}
 
 if s:run == 0
