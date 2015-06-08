@@ -57,12 +57,17 @@ function! candic#remove(dict, key) abort " {{{
   return 0
 endfunction " }}}
 
+function! candic#keys(dict, ...) abort " {{{
+" keys(dict [, key, [regexp]])
 " @return candidates which start with a:key
 " @return all candicates if a:key=''
-function! candic#keys(dict, ...) abort " {{{
   let key = a:0 == 0 ? '' : s:kname(a:1)
+  let regexp = get(a:000, 1, 0)
   if key ==# ''
     return keys(a:dict['dic'])
+  elseif regexp
+    let ks = keys(a:dict['dic'])
+    return filter(ks, 'v:val =~# key')
   elseif has_key(a:dict['candi'], key)
     return a:dict['candi'][key]
   else
@@ -78,7 +83,6 @@ function! candic#get(dict, key) abort " {{{
   let p = candic#keys(a:dict, a:key)
   return map(copy(p), 'a:dict[''dic''][v:val]')
 endfunction " }}}
-
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
