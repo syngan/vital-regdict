@@ -4,7 +4,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! candic#init() abort " {{{
-  return {'dic': {}, 'candi': {}}
+  return {'dic': {}}
 endfunction " }}}
 
 function! s:kname(key) abort " {{{
@@ -17,37 +17,10 @@ function! candic#append(dict, key, value) abort " {{{
   if key ==# ''
     return 1
   endif
-  if has_key(a:dict['dic'], key)
-    let a:dict['dic'][key] = a:value
-    return 0
-  endif
-
   let a:dict['dic'][key] = a:value
-  let d = a:dict['candi']
-  for i in range(len(key))
-    let s = key[0 : i]
-    if !has_key(d, s)
-      let d[s] = [key]
-    else
-      call add(d[s], key)
-    endif
-  endfor
 endfunction " }}}
 
 function! s:remove(dict, key) abort " {{{
-  for i in range(len(a:key))
-    let s = a:key[0 : i]
-    for j in range(len(a:dict['candi'][s]))
-      if a:dict['candi'][s][j] ==# a:key
-        if len(a:dict['candi'][s]) == 1
-          unlet a:dict['candi'][s]
-        else
-          call remove(a:dict['candi'][s], j)
-        endif
-        break
-      endif
-    endfor
-  endfor
   unlet a:dict['dic'][a:key]
   return 0
 endfunction " }}}
@@ -66,7 +39,7 @@ function! candic#remove(dict, ...) abort " {{{
 endfunction " }}}
 
 function! candic#keys(dict, ...) abort " {{{
-" keys(dict [, key, [regexp]])
+" keys(dict [, key, [flag]])
 " @return candidates which start with a:key
 " @return all candicates if a:key=''
   let key = a:0 == 0 ? '' : s:kname(a:1)
@@ -76,10 +49,10 @@ function! candic#keys(dict, ...) abort " {{{
   elseif regexp
     let ks = keys(a:dict['dic'])
     return filter(ks, 'v:val =~# key')
-  elseif has_key(a:dict['candi'], key)
-    return a:dict['candi'][key]
   else
-    return []
+    let ks = keys(a:dict['dic'])
+    let key = '^' . key
+    return filter(ks, 'v:val =~# key')
   endif
 endfunction " }}}
 
