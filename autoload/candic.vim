@@ -3,10 +3,6 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! candic#init() abort " {{{
-  return {}
-endfunction " }}}
-
 function! s:kname(key) abort " {{{
   return a:key
 endfunction " }}}

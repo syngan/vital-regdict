@@ -44,7 +44,7 @@ function! s:same(a, b) abort " {{{
 endfunction " }}}
 
 function! s:suite.basic() " {{{
-  let d = candic#init()
+  let d = {}
   call candic#append(d, 'hoge', 1)
   call candic#append(d, 'hage', 2)
   call candic#append(d, 'ha', 3)
@@ -66,7 +66,7 @@ function! s:suite.basic() " {{{
 endfunction " }}}
 
 function! s:suite.append() " {{{
-  let d = candic#init()
+  let d = {}
   let r = candic#append(d, '', 1)
   call s:assert.equals(r, 1, 'empty-key')
   let r = candic#append(d, '@hoge', 1)
@@ -75,7 +75,7 @@ function! s:suite.append() " {{{
 endfunction " }}}
 
 function! s:suite.remove() " {{{
-  let d = candic#init()
+  let d = {}
   call s:assert.equals(candic#remove(d, ''), 0, 'empty-key')
   call s:assert.equals(candic#remove(d, 'ha'), 0, 'ha-1')
   call candic#append(d, 'ha', 1)
@@ -84,7 +84,7 @@ function! s:suite.remove() " {{{
 endfunction " }}}
 
 function! s:suite.values() " {{{
-  let d = candic#init()
+  let d = {}
   call candic#append(d, 'hoge', 1)
   call candic#append(d, 'hage', 2)
   call candic#append(d, 'ha', 3)
