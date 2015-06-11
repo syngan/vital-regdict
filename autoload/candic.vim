@@ -39,12 +39,8 @@ function! candic#keys(dict, ...) abort " {{{
   endif
   let key = s:kname(a:1)
   let flag = get(a:000, 1, 0)
-  if flag == 1
-    let ks = keys(a:dict)
-    return filter(ks, 'v:val =~# key')
-  else
-    return has_key(a:dict, key) ? [key] : []
-  endif
+  let ks = keys(a:dict)
+  return filter(ks, 'v:val =~# key')
 endfunction " }}}
 
 function! candic#values(dict, ...) abort " {{{
