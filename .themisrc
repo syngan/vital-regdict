@@ -1,0 +1,4 @@
+call themis#option('runtimepath', $HOME . '/.vim/bundle/vital.vim')
+call themis#option('runtimepath', '/tmp/vital.vim')
+call themis#option('recursive', 1)
+
